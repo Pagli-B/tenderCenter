@@ -93,7 +93,7 @@ int main()
         } while (!(choice == 1 || choice == 2 || choice == 0));
         if (choice == 1)
         {
-            bool consumerValid = consumerLogin();
+            bool consumerValid = consumerLogin(); //user login
             if (consumerValid)
             {
                 system("cls");
@@ -455,7 +455,7 @@ std::string mobileNumber()
         {
             std::cout << "Is your input correct? [Y/N]";
             std::cin >> confirmInput;
-            switch (confirmInput)
+            switch (confirmInput) //lets the user check his mobile number input and confirm it
             {
             case 'Y':
             case 'y':
@@ -500,7 +500,7 @@ void transacHistoryMobileLoad()
                   << mobileCost[i] << " Pesos\t\t\n";
         loadTotal += mobileCost[i];
     }
-    std::cout << "\n\nTotal Earnings of the Loading Service: " << loadTotal << " Pesos...";
+    std::cout << "\n\nTotal Earnings of the Loading Service: " << loadTotal << " Pesos..."; //total mobile cost
     std::cout << "\n\n======================================================================\n";
     std::cout << "==============================END LIST================================\n";
     std::cout << "Press Enter to Continue: \n\n";
@@ -547,7 +547,7 @@ int inventoryMobileLoad()
                       << "Choose your option: ";
             std::cin >> productOption;
         } while (productOption > 5 || productOption < 0);
-        switch (productOption)
+        switch (productOption) // this is where you can increase the balance of the loading station
         {
         case 1:
             std::cout << "How much would you like to add to " << networkCarrier[0] << "?: ";
@@ -611,7 +611,7 @@ int inventoryMobileLoad()
                       << "Choose your option: ";
             std::cin >> productOption;
         } while (productOption > 5 || productOption < 0);
-        switch (productOption)
+        switch (productOption) // this is where you can decrease the balance of the loading machine
         {
         case 1:
             std::cout << "How much would you like to decrease to " << networkCarrier[0] << "?: ";
@@ -673,7 +673,7 @@ int inventoryMobileLoad()
                       << "Choose your option: ";
             std::cin >> productOption;
         } while (productOption > 5 || productOption < 0);
-        switch (productOption)
+        switch (productOption) //let's you edit the balance of a specific network carrier
         {
         case 1:
             std::cout << "Edit the load balance of " << networkCarrier[0] << ": ";
@@ -1056,7 +1056,7 @@ void transacHistoryOverall()
     system("cls");
     std::cout << "All Transactions:\n";
     std::cout << "\n\n=================================================================================\n";
-    std::cout << "===============================START LIST===========================================\n\n\n";
+    std::cout << "===============================START LIST=======================================\n\n\n";
     std::cout
         << "\tUser"
         << "\t\t"
@@ -1086,9 +1086,10 @@ void transacHistoryOverall()
         loadTotal += mobileCost[i];
     }
 
-    std::cout << "\n\nTotal Earnings of the Loading Service: " << loadTotal << " Pesos...\n\n\n";
+    std::cout << "\n\nTotal Earnings of the Loading Service: " << loadTotal << " Pesos...\n";
 
-    std::cout << "\n\n\n";
+    std::cout << "\n\n=================================================================================\n\n";
+
     std::cout
         << "\tUser"
         << "\t\t"
@@ -1110,9 +1111,9 @@ void transacHistoryOverall()
 
     std::cout << "\n\nTotal Earnings of Food Orders: " << foodTotal << " Pesos";
 
-    std::cout << "\n\nTotal Earnings of the Shop: " << loadTotal + foodTotal << " Pesos";
+    std::cout << "\n\nTotal Earnings of the Shop: " << std::setprecision(2) << std::fixed << loadTotal + foodTotal << " Pesos";
     std::cout << "\n\n=================================================================================\n";
-    std::cout << "==============================END LIST===============================================\n";
+    std::cout << "==============================END LIST===========================================\n";
     std::cout << "\n\n";
     std::cout << "Press Enter to Continue: \n\n";
     std::cin.get();

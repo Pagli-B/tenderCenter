@@ -18,6 +18,7 @@ void transacHistoryMobileLoad();
 void transacHistoryFoodOrder();
 int inventoryMobileLoad();
 int inventoryFoodOrder();
+void transacHistoryOverall();
 
 //global vars
 int status{1};
@@ -54,7 +55,9 @@ std::string foodMenu[10] = {"Hotdog", "Burger", "Bananacue", "Tinola with Rice",
 float foodP[10] = {15.0, 20.0, 25.0, 35.0, 50.0};
 int foodStock[10] = {50, 50, 30, 100, 100};
 int foodQuan{};
+int quanRecord[20] = {};
 float foodTotal{};
+float overallTotal{};
 std::string foodSpec[10] = {};
 
 int main()
@@ -103,9 +106,9 @@ int main()
                     do
                     {
                         std::cout << "Options:\n"
-                                  << "[1]\tMobile Loading\n"
-                                  << "[2]\tFood\n"
-                                  << "[0]\tLog Out\n"
+                                  << "[1] Mobile Loading\n"
+                                  << "[2] Food Order\n"
+                                  << "[0] Log Out\n"
                                   << "Enter your option here: ";
                         std::cin >> option;
                     } while (!(option >= 0 || option <= 3));
@@ -132,7 +135,7 @@ int main()
                         break;
                     case 2:
                         foodOption = foodOrder(); //for indexing and computation [LINE 120 AND 124]
-                        if (foodOption == 0)
+                        if (foodOption == -1)
                         {
                             system("cls");
                             break;
@@ -142,8 +145,7 @@ int main()
                         transacHistory[transacIndex][1] = foodMenu[foodOption];                 //saving what specific food order [OVERALL]
                         foodHistory[foodTransacIndex][1] = transacHistory[transacIndex][1];     //saving what specific order [FOOD CATEGORY]
                         foodQuan = foodOrderAmount();                                           //for indexing and computation [LINE 122 AND 124]
-                        transacHistory[transacIndex][2] = foodQuan;                             //saving the quantity of food [OVERALL]
-                        foodHistory[foodTransacIndex][2] = transacHistory[transacIndex][2];     //saving the quantity of food [FOOD CATEGORY]
+                        quanRecord[foodTransacIndex] = foodQuan;                                //saving the quantity of food [OVERALL]
                         cost[transacIndex] = foodQuan * foodP[foodOption];                      //saving total price [OVERALL]
                         foodCost[foodTransacIndex] = cost[transacIndex];                        //saving total price [FOOD CATEGORY]
                         foodTransacIndex++;
@@ -176,9 +178,10 @@ int main()
                     do
                     {
                         std::cout << "Businesses to Manage:\n"
-                                  << "[1]\tMobile Loading\n"
-                                  << "[2]\tFood Order\n"
-                                  << "[0]\tLog Out\n"
+                                  << "[1] Mobile Loading\n"
+                                  << "[2] Food Order\n"
+                                  << "[3] Overall Transactions\n"
+                                  << "[0] Log Out\n"
                                   << "Enter your option here: ";
                         std::cin >> option;
                     } while (!(option >= 0 || option <= 2));
@@ -257,7 +260,9 @@ int main()
                             }
                         }
                         break;
-
+                    case 3:
+                        transacHistoryOverall();
+                        break;
                     case 0:
                         system("cls");
                         cancel = true;
@@ -469,21 +474,6 @@ std::string mobileNumber()
 
     return mobileNumberInput;
 }
-//"Nahihiloooooooo, nalilitooooooo"
-//baka need ng pa ganto, mobileCarrierGlobe[] = {{'0','9','3','7'}} kasi char yung values niya, dapat may single quote
-// mobileCarrierGlobeOrTM[] = {{'0','8'},}
-// egis egis
-//tama ba to??
-// i think dapat mobileNumberInput[0] == '0' && mobileNumberInput[1] == '9' ohh ok ok
-//globe or tm - 0817, 0904, 0905, 0906, 0915-0917, 0926-0927, 0935-0936, 0945, 0953-0956, 0965-0967, 0975-0979,
-// 0994-0997
-//globe - 0937
-//smart  or talk n text - 0813, 0907-0914 , 0918-0921, 0928-0930, 0938-0939, 0946-0951, 0970, 0981, 0989,0992
-//0998-0999
-// sun - 0922 -0925, 0931-0934, 0940-0944, 0973-0974
-// smart or TNT - 0961, 0963
-// smart - 0968
-// DITO - 0991-0994, 0895-0898
 
 void transacHistoryMobileLoad()
 {
@@ -506,7 +496,7 @@ void transacHistoryMobileLoad()
                   << mobileHistory[i][2][7]
                   << mobileHistory[i][2][8]
                   << mobileHistory[i][2][9]
-                  << mobileHistory[i][2][10] << "\t\t"
+                  << mobileHistory[i][2][10] << "\t"
                   << mobileCost[i] << " Pesos\t\t\n";
         loadTotal += mobileCost[i];
     }
@@ -739,12 +729,6 @@ int inventoryMobileLoad()
     return 1;
 }
 
-void increaseLoad()
-{
-    std::cout << "Which network carrier?"
-              << "[1]";
-}
-
 int foodOrder()
 {
     system("cls");
@@ -769,6 +753,7 @@ int foodOrder()
     } while (productOption > 5 || productOption < 0);
     if (productOption == 0)
     {
+        productOption -= 1;
         return productOption;
     }
     productOption -= 1;
@@ -792,11 +777,13 @@ float foodOrderAmount()
 
     std::cout << amount << " " << foodMenu[productOption] << "/s coming right up!\n"
               << "Here you go!\n"
-              << "That would be " << std::setprecision(2) << std::fixed << amount * foodP[productOption] << " Pesos.";
+              << "That would be " << std::setprecision(2) << std::fixed << amount * foodP[productOption] << " Pesos.\n";
     foodStock[productOption] -= amount;
-    std::cout << "Press ENTER to continue...";
+    std::cout << "Press ENTER to continue...\n";
+    std::cin.get();
     std::cin.get();
     system("cls");
+
     return amount;
 }
 
@@ -804,21 +791,33 @@ void transacHistoryFoodOrder()
 {
     system("cls");
     std::cout << "Food Ordering Transactions:\n";
-    std::cout << "======================================================================\n";
-    std::cout << "==============================START LIST==============================\n\n\n";
+    std::cout << "\n\n=================================================================================\n";
+    std::cout << "===============================START LIST===========================================\n\n\n";
+    std::cout
+        << "\tUser"
+        << "\t\t"
+        << "Food"
+        << "\t\t"
+        << "Quantity"
+        << "\t\t"
+        << "Total Cost"
+        << "\t\t\n";
     for (i = 0; i < foodTransacIndex; i++)
     {
         std::cout << "[" << i << "]\t"
                   << foodHistory[i][0] << "\t\t"
                   << foodHistory[i][1] << "\t\t"
-                  << foodHistory[i][2] << "\t\t"
+                  << quanRecord[i] << "\t\t"
                   << foodCost[i] << " Pesos\t\t\n";
         foodTotal += foodCost[i];
     }
     std::cout << "\n\nTotal Earnings of Food Orders: " << foodTotal << " Pesos";
-    std::cout << "\n\n======================================================================\n";
-    std::cout << "==============================END LIST================================\n";
+    std::cout << "\n\n=================================================================================\n";
+    std::cout << "==============================END LIST===============================================\n";
     std::cout << "\n\n";
+    std::cout << "Press Enter to Continue: \n\n";
+    std::cin.get();
+    std::cin.get();
 }
 
 int inventoryFoodOrder()
@@ -1050,4 +1049,72 @@ int inventoryFoodOrder()
         break;
     }
     return 1;
+}
+
+void transacHistoryOverall()
+{
+    system("cls");
+    std::cout << "All Transactions:\n";
+    std::cout << "\n\n=================================================================================\n";
+    std::cout << "===============================START LIST===========================================\n\n\n";
+    std::cout
+        << "\tUser"
+        << "\t\t"
+        << "Network Carrier"
+        << "\t\t"
+        << "Number"
+        << "\t\t"
+        << "Total Cost"
+        << "\t\t\n";
+    for (i = 0; i < mobileTransacIndex; i++)
+    {
+        std::cout << "[" << i << "]\t"
+                  << mobileHistory[i][0] << "\t\t"
+                  << mobileHistory[i][1] << "\t\t"
+                  << mobileHistory[i][2][0]
+                  << mobileHistory[i][2][1]
+                  << mobileHistory[i][2][2]
+                  << mobileHistory[i][2][3]
+                  << mobileHistory[i][2][4]
+                  << mobileHistory[i][2][5]
+                  << mobileHistory[i][2][6]
+                  << mobileHistory[i][2][7]
+                  << mobileHistory[i][2][8]
+                  << mobileHistory[i][2][9]
+                  << mobileHistory[i][2][10] << "\t"
+                  << mobileCost[i] << " Pesos\t\t\n";
+        loadTotal += mobileCost[i];
+    }
+
+    std::cout << "\n\nTotal Earnings of the Loading Service: " << loadTotal << " Pesos...\n\n\n";
+
+    std::cout << "\n\n\n";
+    std::cout
+        << "\tUser"
+        << "\t\t"
+        << "Food"
+        << "\t\t"
+        << "Quantity"
+        << "\t\t"
+        << "Total Cost"
+        << "\t\t\n";
+    for (i = 0; i < foodTransacIndex; i++)
+    {
+        std::cout << "[" << i << "]\t"
+                  << foodHistory[i][0] << "\t\t"
+                  << foodHistory[i][1] << "\t\t"
+                  << quanRecord[i] << "\t\t"
+                  << foodCost[i] << " Pesos\t\t\n";
+        foodTotal += foodCost[i];
+    }
+
+    std::cout << "\n\nTotal Earnings of Food Orders: " << foodTotal << " Pesos";
+
+    std::cout << "\n\nTotal Earnings of the Shop: " << loadTotal + foodTotal << " Pesos";
+    std::cout << "\n\n=================================================================================\n";
+    std::cout << "==============================END LIST===============================================\n";
+    std::cout << "\n\n";
+    std::cout << "Press Enter to Continue: \n\n";
+    std::cin.get();
+    std::cin.get();
 }
